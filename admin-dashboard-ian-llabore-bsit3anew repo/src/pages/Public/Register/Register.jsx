@@ -49,15 +49,18 @@ function Register() {
   const handleRegister = async () => {
       setStatus('loading');
 
-      console.log('Access Token:', localStorage.getItem('accessToken'));
-
-
       try {
-          const response = await axios.post('/movieproject-api/user/register', formData); // Removed Authorization header
-          console.log(response.data);
+          const response = await axios.post('http://localhost:5000/movieproject-api/user/register', formData, {
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+          console.log('Response:', response.data);
+          alert('Registration successful!');
           navigate('/'); // Redirect to the login page
           setStatus('idle');
       } catch (error) {
+          console.error('Error Response:', error.response?.data || error.message);
           alert(error.response?.data?.message || 'An error occurred.');
           setStatus('idle');
       }
