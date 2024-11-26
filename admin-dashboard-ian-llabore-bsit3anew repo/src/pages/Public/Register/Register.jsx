@@ -48,17 +48,23 @@ function Register() {
 
   const handleRegister = async () => {
     setStatus('loading');
-
+  
     try {
-      const response = await axios.post('http://localhost:3000/admin/register', formData, {
-        headers: { 'Access-Control-Allow-Origin': '*' },
-      });
-
+      const response = await axios.post(
+        '/movieproject-api/admin/register',
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // Or any required token
+          },
+        }
+      );
+  
       localStorage.setItem('accessToken', response.data.access_token);
-      navigate('/');
+      navigate('/'); // Navigate to the login page
       setStatus('idle');
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response?.data?.message || 'An error occurred.');
       setStatus('idle');
     }
   };
