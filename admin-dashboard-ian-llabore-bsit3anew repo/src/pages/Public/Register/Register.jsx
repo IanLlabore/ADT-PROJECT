@@ -47,26 +47,20 @@ function Register() {
   };
 
   const handleRegister = async () => {
-    setStatus('loading');
-  
-    try {
-      const response = await axios.post(
-        '/movieproject-api/admin/register',
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // Or any required token
-          },
-        }
-      );
-  
-      localStorage.setItem('accessToken', response.data.access_token);
-      navigate('/'); // Navigate to the login page
-      setStatus('idle');
-    } catch (error) {
-      alert(error.response?.data?.message || 'An error occurred.');
-      setStatus('idle');
-    }
+      setStatus('loading');
+
+      console.log('Access Token:', localStorage.getItem('accessToken'));
+
+
+      try {
+          const response = await axios.post('/movieproject-api/user/register', formData); // Removed Authorization header
+          console.log(response.data);
+          navigate('/'); // Redirect to the login page
+          setStatus('idle');
+      } catch (error) {
+          alert(error.response?.data?.message || 'An error occurred.');
+          setStatus('idle');
+      }
   };
 
   useEffect(() => {
