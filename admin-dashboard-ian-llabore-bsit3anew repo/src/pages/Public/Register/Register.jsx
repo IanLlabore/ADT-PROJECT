@@ -50,7 +50,7 @@ function Register() {
       setStatus('loading');
 
       try {
-          const response = await axios.post('http://localhost:5000/movieproject-api/user/register', formData, {
+          const response = await axios.post('http://localhost/movieproject-api/user/register', formData, {
               headers: {
                   'Content-Type': 'application/json',
               },
