@@ -41,29 +41,27 @@ function Login() {
   };
 
   const handleLogin = async () => {
-    const data = { email, password };
-    setStatus('loading');
+      const data = { email, password };
+      setStatus('loading');
 
-    await axios({
-      method: 'post',
-      url: '/admin/login',
-      data,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-    })
-      .then((res) => {
-        console.log(res);
-        //store response access token to localstorage
-        localStorage.setItem('accessToken', res.data.access_token);
-        navigate('/main/movies');
-        setStatus('idle');
-      })
-      .catch((e) => {
-        setError(e.response.data.message);
-        console.log(e);
-        setStatus('idle');
-        // alert(e.response.data.message);
-      });
+      try {
+          // No need to add Access-Control-Allow-Origin in the request headers
+          const response = await axios.post('http://localhost/movieproject-api/user/login', data, {
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+
+          // Store response access token to localstorage if login is successful
+          localStorage.setItem('accessToken', response.data.access_token);
+          navigate('/main/movies');
+          setStatus('idle');
+      } catch (error) {
+          setError(error.response?.data?.message || 'An error occurred');
+          setStatus('idle');
+      }
   };
+
 
   useEffect(() => {
     setDebounceState(true);
