@@ -84,6 +84,11 @@ class UserController
         ]);
     }
 
+
+
+
+
+
     private function getLogInValidationErrors(array $data): array
     {
         $errors = [];

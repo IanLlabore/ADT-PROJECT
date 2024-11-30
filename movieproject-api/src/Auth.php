@@ -24,21 +24,23 @@ class Auth
             return false;
         }
 
+        // Log the token to check its value
+        error_log("Authorization header: " . $_SERVER["HTTP_AUTHORIZATION"]);
+
         try {
             $data = $this->codec->decode($matches[1]);
-
         } catch (InvalidSignatureException) {
             http_response_code(401);
             echo json_encode(["message" => "Invalid signature"]);
             return false;
         } catch (Exception $e) {
-
             http_response_code(400);
             echo json_encode(["message" => $e->getMessage()]);
             return false;
         }
-        $this->user_id = $data["userId"];
 
+        $this->user_id = $data["userId"];
         return true;
     }
+
 }

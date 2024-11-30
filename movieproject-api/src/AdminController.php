@@ -25,13 +25,13 @@ class AdminController
 
     private function processLoginRequest(): void
     {
-
         $data = (array) json_decode(file_get_contents("php://input"), true);
-        $errors = $this->getLogInValidationErrors(($data));
+        $errors = $this->getLogInValidationErrors($data);
 
         if (!empty($errors)) {
             http_response_code(422);
             echo json_encode(["errors" => $errors]);
+            return;
         }
 
         $user = $this->gateway->login($data['email'], $data['password']);
@@ -42,9 +42,27 @@ class AdminController
             return;
         }
 
-        echo json_encode($user);
+        // Generate a JWT token for the user
+        $token = $this->generateJwtToken($user);
 
+        // Respond with the token and user data
+        echo json_encode([
+            'access_token' => $token,
+            'user' => $user
+        ]);
     }
+
+// Function to generate the JWT token
+private function generateJwtToken($user): string
+{
+    // You may need to adjust this based on your JWTCodec implementation
+    return $this->codec->encode([
+        'userId' => $user['userId'],
+        'email' => $user['email'],
+        'role' => $user['role'],
+        // Add more user fields to the payload as needed
+    ]);
+}
 
     private function processRegistrationRequest(): void
     {

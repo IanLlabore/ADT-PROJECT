@@ -41,28 +41,50 @@ function Login() {
   };
 
   const handleLogin = async () => {
-      const data = { email, password };
-      setStatus('loading');
-
-      try {
-          // No need to add Access-Control-Allow-Origin in the request headers
-          const response = await axios.post('http://localhost/movieproject-api/user/login', data, {
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-          });
-
-          // Store response access token to localstorage if login is successful
-          localStorage.setItem('accessToken', response.data.access_token);
+    const data = { email, password };
+    setStatus('loading');
+  
+    try {
+      const response = await axios.post('http://localhost/movieproject-api/user/login', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      // Log the raw response data to see the full string
+      console.log('Full Response:', response.data);
+  
+      // Extract the JSON part from the response string
+      const jsonString = response.data.match(/{.*}/s); // Matches everything inside the first curly braces
+      if (jsonString) {
+        const parsedResponse = JSON.parse(jsonString[0]); // Safely parse the matched JSON string
+  
+        console.log('Parsed Response:', parsedResponse);
+  
+        if (parsedResponse && parsedResponse.access_token) {
+          console.log('Saving token:', parsedResponse.access_token);
+          localStorage.setItem('accessToken', parsedResponse.access_token);
+          console.log('Stored token in localStorage:', localStorage.getItem('accessToken'));
           navigate('/main/movies');
-          setStatus('idle');
-      } catch (error) {
-          setError(error.response?.data?.message || 'An error occurred');
-          setStatus('idle');
+        } else {
+          setError('Token not found');
+          alert('Login failed, token not found.');
+        }
+      } else {
+        console.log('Invalid response format:', response.data);
+        setError('Invalid response format');
+        alert('Login failed, invalid response format.');
       }
+  
+      setStatus('idle');
+    } catch (error) {
+      console.error('Error:', error);
+      setError(error.response?.data?.message || 'An error occurred');
+      setStatus('idle');
+    }
   };
-
-
+  
+  
   useEffect(() => {
     setDebounceState(true);
   }, [userInputDebounce]);
@@ -123,7 +145,7 @@ function Login() {
                       emailRef.current.focus();
                     }
 
-                    if (password == '') {
+                    if (password =='') {
                       passwordRef.current.focus();
                     }
                   }

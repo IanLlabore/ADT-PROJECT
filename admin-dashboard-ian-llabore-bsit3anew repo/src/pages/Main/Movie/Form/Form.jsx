@@ -31,9 +31,16 @@ const Form = () => {
 
   const handleSave = () => {
     const accessToken = localStorage.getItem('accessToken');
-    console.log(accessToken);
+    
+    // Check if the token is available
+    if (!accessToken) {
+      alert('You must be logged in to save a movie.');
+      return;
+    }
+  
+    console.log('Access Token:', accessToken);  // Debug log for token
+  
     if (selectedMovie === undefined) {
-      //add validation
       alert('Please search and select a movie.');
     } else {
       const data = {
@@ -47,20 +54,25 @@ const Form = () => {
         posterPath: `https://image.tmdb.org/t/p/original/${selectedMovie.poster_path}`,
         isFeatured: 0,
       };
-
-      const request = axios({
+  
+      console.log('Sending data:', data);  // Log the request data
+  
+      axios({
         method: 'post',
-        url: '/movies',
+        url: '/movies', // Ensure this is the correct endpoint
         data: data,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
         .then((saveResponse) => {
-          console.log(saveResponse);
-          alert('Success');
+          console.log('Save response:', saveResponse);  // Log successful response
+          alert('Movie saved successfully');
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          console.error('Error saving movie:', error.response || error);  // Log errors
+          alert('There was an issue saving the movie.');
+        });
     }
   };
 

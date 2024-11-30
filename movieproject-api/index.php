@@ -9,7 +9,7 @@ header("Access-Control-Allow-Credentials: true");
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204); // No Content
     exit;
-    }
+}
 
 //run `composer dump-autoload` to create autoload files
 require __DIR__ . "/vendor/autoload.php";
@@ -22,20 +22,12 @@ header("Content-type: application/json; charset=UTF-8");
 //explode function converts the string to array
 $parts = explode("/", $_SERVER["REQUEST_URI"]);
 
-// $http_authorization = $_SERVER["HTTP_AUTHORIZATION"];
-
-//other way of getting the autorization header
-// $header = apache_request_headers();
-// $http_authorization = $header["Authorization"];
-
 //database config
 $database = new Database("localhost", "movieProjectDb", "root", "");
 $database->getConnection();
 $user_gateway = new UserGateway($database);
 
 $codec = new JWTCodec;
-
-header("Access-Control-Allow-Origin: *");
 
 $auth = new Auth($user_gateway, $codec);
 
@@ -47,6 +39,7 @@ if (!(($parts[2] === 'user' && $parts[3] === 'register'))) {
         }
     }
 }
+
 switch ($parts[2]) {
     case 'admin':
         // Admin endpoint
@@ -57,20 +50,11 @@ switch ($parts[2]) {
             exit;
         }
 
-        // Handle login and register routes for admin
-        if ($parts[3] === 'user' && $parts[4] === 'register') {
-            // Handle user registration logic
-            $controller = new UserController($user_gateway);
-            $controller->processRequest($_SERVER["REQUEST_METHOD"], 'register');
-            break;
-        }
-
         // Authenticate access token for other admin actions
         if (!$auth->authenticateAccessToken()) {
             exit;
         }
 
-        // Admin actions such as 'movies', 'user', etc.
         switch ($action) {
             case 'movies':
                 $id = $parts[4] ?? null;
@@ -79,30 +63,8 @@ switch ($parts[2]) {
                 $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
                 break;
 
-            case 'user':
-                // Handle user registration, login, and profile actions
-                if ($parts[4] === 'register') {
-                    $controller = new UserController($user_gateway);
-                    $controller->processRequest($_SERVER["REQUEST_METHOD"], 'register');
-                    break;
-                }
-                // Add more user-related actions if needed
-                break;
-
-            case 'casts':
-                $id = $parts[4] ?? null;
-                $movieId = $parts[5] ?? null;
-                $gateway = new AdminCastsGateway($database);
-                $controller = new AdminCastsController($gateway, $auth);
-                $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
-                break;
-
-            case 'photos':
-                $id = $parts[4] ?? null;
-                $gateway = new AdminPhotosGateway($database);
-                $controller = new AdminPhotosController($gateway, $auth);
-                $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
-                break;
+            // Handle other admin actions (user, casts, photos)
+            // Add more cases here for admin actions like 'user', 'casts', 'photos', etc.
 
             default:
                 http_response_code(404);
@@ -112,65 +74,67 @@ switch ($parts[2]) {
         break;
 
     case 'user':
-        //user endpoint
+        // user endpoint
         $action = $parts[3] ?? null;
         if ($action === null) {
             http_response_code(404);
-            echo "Action is missing."; // Debugging output for missing action
+            echo json_encode(['message' => 'Action is missing.']);
             exit;
         }
-        
-        echo "User endpoint hit! Action: $action"; // Debugging output for valid action
 
+        // Handle login action for the user endpoint
+        if ($action === 'login') {
+            // Handle login logic
+            $controller = new UserController($user_gateway);
+            $controller->processRequest($_SERVER["REQUEST_METHOD"], 'login');
+            break;
+        }
 
-        $gateway = new UserGateway($database);
+        // Handle user registration logic
+        if ($action === 'register') {
+            // Handle user registration logic
+            $controller = new UserController($user_gateway);
+            $controller->processRequest($_SERVER["REQUEST_METHOD"], 'register');
+            break;
+        }
 
-        $controller = new UserController($gateway);
-        $controller->processRequest($_SERVER["REQUEST_METHOD"], $action);
+        // Add more user-related actions if needed
         break;
 
     case 'movies':
-        //movies endpoint
+        // Movies endpoint
         $id = $parts[3] ?? null;
-
-        $gateway = new MovieGateway($database); //database
-
+        $gateway = new MovieGateway($database);
         $controller = new MovieController($gateway, $auth);
         $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
         break;
 
     case 'photos':
-        //photos endpoint
+        // Photos endpoint
         $id = $parts[3] ?? null;
-
         $gateway = new PhotosGateway($database);
-
         $controller = new PhotosController($gateway, $auth);
         $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
         break;
 
     case 'videos':
-        //videos endpoint
+        // Videos endpoint
         $id = $parts[3] ?? null;
-
         $gateway = new VideosGateway($database);
-
         $controller = new VideosController($gateway, $auth);
         $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
         break;
 
     case 'casts':
-        //casts endpoint
+        // Casts endpoint
         $id = $parts[3] ?? null;
-
         $gateway = new CastsGateway($database);
-
         $controller = new CastsController($gateway, $auth);
         $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
         break;
 
-
     default:
         http_response_code(404);
+        echo json_encode(['message' => 'Endpoint not found']);
         exit;
 }

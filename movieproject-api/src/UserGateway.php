@@ -15,19 +15,21 @@ class UserGateway
                 VALUES (:email, :password, :firstName, :middleName, :lastName, :contactNo, :role)";
         $res = $this->conn->prepare($sql);
 
-        //encrypt password using md5
+        // Encrypt password using md5
         $password = md5($data["password"]);
-        //bind value to PDO
+        
+        // Bind values to PDO
         $res->bindValue(":email", $data["email"], PDO::PARAM_STR);
         $res->bindValue(":password", $password, PDO::PARAM_STR);
         $res->bindValue(":firstName", $data["firstName"], PDO::PARAM_STR);
         $res->bindValue(":middleName", $data["middleName"], PDO::PARAM_STR);
         $res->bindValue(":lastName", $data["lastName"], PDO::PARAM_STR);
         $res->bindValue(":contactNo", $data["contactNo"], PDO::PARAM_STR);
-        $res->bindValue(":role", 'user', PDO::PARAM_STR);
+        $res->bindValue(":role", $data["role"], PDO::PARAM_STR); // Use dynamic role
 
-        //execute the SQL query
+        // Execute the SQL query
         $res->execute();
+
         return $this->conn->lastInsertId();
     }
 
