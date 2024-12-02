@@ -9,6 +9,7 @@ import Main from './pages/Main/Main';
 import Movie from './pages/Main/Movie/Movie';
 import Lists from './pages/Main/Movie/Lists/Lists';
 import Form from './pages/Main/Movie/Form/Form';
+import Cast from './pages/Main/Movie/Form/Cast/Cast';  // Corrected import
 
 const router = createBrowserRouter([
   {
@@ -48,11 +49,7 @@ const router = createBrowserRouter([
               },
               {
                 path: '/main/movies/form/:movieId/cast-and-crews',
-                element: (
-                  <h1>
-                    Change this for cast & crew CRUD functionality component.
-                  </h1>
-                ),
+                element: <Cast />,  // Correct path to Cast component
               },
               {
                 path: '/main/movies/form/:movieId/photos',
