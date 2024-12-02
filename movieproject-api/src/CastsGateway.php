@@ -40,13 +40,13 @@ class CastsGateway
         return $this->conn->lastInsertId();
     }
 
-    public function get(string $id)
+    public function get(string $movieId)
     {
-        $sql = "SELECT * FROM casts WHERE id = :id";
+        $sql = "SELECT * FROM casts WHERE movieId = :movieId";  // Ensure this is correctly querying for movieId
         $res = $this->conn->prepare($sql);
-        $res->bindValue(":id", $id, PDO::PARAM_INT);
+        $res->bindValue(":movieId", $movieId, PDO::PARAM_INT);  // Bind the movieId correctly
         $res->execute();
-        $data = $res->fetch(PDO::FETCH_ASSOC);
+        $data = $res->fetchAll(PDO::FETCH_ASSOC);  // Fetch the results
 
         return $data;
     }

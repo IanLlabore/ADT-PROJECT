@@ -122,22 +122,40 @@ class AdminCastsController
     {
         switch ($method) {
             case "GET":
-                echo json_encode($this->gateway->getAll());
+                if (isset($_GET['movieId'])) {
+                    $movieId = $_GET['movieId'];  // Fetch movieId from the query parameters
+                    if (!is_numeric($movieId)) {
+                        http_response_code(400);
+                        echo json_encode(["error" => "Invalid movie ID"]);
+                        return;
+                    }
+
+                    $casts = $this->gateway->getAll((int) $movieId);  // Pass movieId to the gateway
+                    if (empty($casts)) {
+                        http_response_code(404);
+                        echo json_encode(["message" => "No casts found for this movie"]);
+                    } else {
+                        echo json_encode($casts);
+                    }
+                } else {
+                    http_response_code(400);
+                    echo json_encode(["error" => "Movie ID is required"]);
+                }
                 break;
 
             case "POST":
                 $jsonData = (array) json_decode(file_get_contents("php://input"), true);
                 $data = $jsonData ? $jsonData : $_POST;
                 $type = $jsonData ? 'json' : 'form';
-                $errors = $this->getValidationErrors($data, true, $type  );
+                $errors = $this->getValidationErrors($data, true, $type);
 
-                //file upload for cast image
+                // File upload for cast image (similar to your current code)
                 if (!empty($_FILES['profilePath']['name']) && $type == 'form') {
                     $profile_path = $_FILES['profilePath']['name'];
                     $temp_path = $_FILES['profilePath']['tmp_name'];
                     $file_size = $_FILES['profilePath']['size'];
                     $temp = explode(".", $_FILES["profilePath"]["name"]);
-                    $new_profile_path = $temp[0].round(microtime(true)) . '.' . end($temp);
+                    $new_profile_path = $temp[0] . round(microtime(true)) . '.' . end($temp);
 
                     $upload_path = "uploads/casts";
                     $file_ext = strtolower(pathinfo($profile_path, PATHINFO_EXTENSION));
@@ -157,15 +175,16 @@ class AdminCastsController
                     } else {
                         $errors[] = "Invalid file format";
                     }
-                } 
-                
-                
+                }
 
+                // Validation errors
                 if (!empty($errors)) {
                     http_response_code(422);
                     echo json_encode(["errors" => $errors]);
                     break;
                 }
+
+                // Set userId and create the cast
                 $data['userId'] = $this->auth->getUserID();
                 $id = $this->gateway->create($data);
 

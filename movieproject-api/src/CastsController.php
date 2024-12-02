@@ -1,24 +1,25 @@
 <?php
 class CastsController
 {
-    public function __construct(private CastGateway $gateway, private Auth $auth)
+    public function __construct(private CastsGateway $gateway, private Auth $auth)
     {
 
     }
-    public function processRequest(string $method, ?string $id,): void
+    public function processRequest(string $method, ?string $id): void
     {
-
-        if (isset($id)) {
-            $this->processResourceRequest($method, $id);
+        if ($id) {
+            $this->processResourceRequest($method, $id); // Use $id (which is the movieId)
         } else {
             $this->processCollectionRequest($method);
-
         }
     }
 
 
+
     private function processResourceRequest(string $method, string $id): void
     {
+        error_log('Requested Movie ID: ' . $id);
+
         $cast = $this->gateway->get($id);
         if (!$cast) {
             http_response_code(404);
