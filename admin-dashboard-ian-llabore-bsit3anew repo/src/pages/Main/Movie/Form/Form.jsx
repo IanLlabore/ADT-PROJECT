@@ -2,215 +2,89 @@ import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { Outlet, useNavigate, useParams } from 'react-router-dom';
 import './Form.css';
+
 const Form = () => {
   const [query, setQuery] = useState('');
   const [searchedMovieList, setSearchedMovieList] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(undefined);
-  const [movie, setMovie] = useState(undefined);
+  const [movieDetails, setMovieDetails] = useState({
+    movie: undefined,
+    cast: [],
+    crew: [],
+    videos: [],
+    images: []
+  });
+
   const navigate = useNavigate();
   let { movieId } = useParams();
 
-  const handleSearch = useCallback(() => {
-    axios({
-      method: 'get',
-      url: `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`,
-      headers: {
-        Accept: 'application/json',
-        Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YTdiNmUyNGJkNWRkNjhiNmE1ZWFjZjgyNWY3NGY5ZCIsIm5iZiI6MTcyOTI5NzI5Ny4wNzMzNTEsInN1YiI6IjY2MzhlZGM0MmZhZjRkMDEzMGM2NzM3NyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ZIX4EF2yAKl6NwhcmhZucxSQi1rJDZiGG80tDd6_9XI',
-      },
-    }).then((response) => {
-      setSearchedMovieList(response.data.results);
-      console.log(response.data.results);
-    });
-  }, [query]);
-
-  const handleSelectMovie = (movie) => {
-    setSelectedMovie(movie);
-  };
-
-  const handleSave = () => {
-    const accessToken = localStorage.getItem('accessToken');
-    
-    // Check if the token is available
-    if (!accessToken) {
-      alert('You must be logged in to save a movie.');
-      return;
-    }
-  
-    console.log('Access Token:', accessToken);  // Debug log for token
-  
-    if (selectedMovie === undefined) {
-      alert('Please search and select a movie.');
-    } else {
-      const data = {
-        tmdbId: selectedMovie.id,
-        title: selectedMovie.title,
-        overview: selectedMovie.overview,
-        popularity: selectedMovie.popularity,
-        releaseDate: selectedMovie.release_date,
-        voteAverage: selectedMovie.vote_average,
-        backdropPath: `https://image.tmdb.org/t/p/original/${selectedMovie.backdrop_path}`,
-        posterPath: `https://image.tmdb.org/t/p/original/${selectedMovie.poster_path}`,
-        isFeatured: 0,
-      };
-  
-      console.log('Sending data:', data);  // Log the request data
-  
-      axios({
-        method: 'post',
-        url: '/movies', // Ensure this is the correct endpoint
-        data: data,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+  // Function to search for movies
+  const searchMovies = async (query) => {
+    try {
+      const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
+        params: {
+          api_key: 'f10ad5116962b95dec6775837d225574', // Replace with your API key
+          query: query,
         },
-      })
-        .then((saveResponse) => {
-          console.log('Save response:', saveResponse);  // Log successful response
-          alert('Movie saved successfully');
-        })
-        .catch((error) => {
-          console.error('Error saving movie:', error.response || error);  // Log errors
-          alert('There was an issue saving the movie.');
-        });
+      });
+      setSearchedMovieList(response.data.results);
+    } catch (error) {
+      console.error("Error fetching movie list:", error);
     }
   };
 
-  //create a form change/validation
-  //create a new handler for update
-  useEffect(() => {
-    if (movieId) {
-      axios.get(`/movies/${movieId}`).then((response) => {
-        setMovie(response.data);
-        const tempData = {
-          id: response.data.tmdbId,
-          original_title: response.data.title,
-          overview: response.data.overview,
-          popularity: response.data.popularity,
-          poster_path: response.data.posterPath,
-          release_date: response.data.releaseDate,
-          vote_average: response.data.voteAverage,
-        };
-        setSelectedMovie(tempData);
-        console.log(response.data);
+  // Function to fetch movie details
+  const fetchMovieDetails = useCallback(async (movieId) => {
+    if (!movieId) return;
+
+    try {
+      const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
+        params: { api_key: 'f10ad5116962b95dec6775837d225574' },
       });
+      setMovieDetails({
+        movie: response.data,
+        cast: response.data.cast || [],
+        crew: response.data.crew || [],
+        videos: response.data.videos || [],
+        images: response.data.images || [],
+      });
+    } catch (error) {
+      console.error('Error fetching movie details:', error);
     }
   }, []);
 
+  // Fetch movie details whenever movieId changes
+  useEffect(() => {
+    if (movieId) {
+      fetchMovieDetails(movieId);
+    }
+  }, [movieId, fetchMovieDetails]);
+
+  // Handle movie click to navigate to movie details page
+  const handleMovieClick = (id) => {
+    navigate(`/main/movies/${id}`);
+  };
+
   return (
-    <>
-      <h1>{movieId !== undefined ? 'Edit ' : 'Create '} Movie</h1>
+    <div>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search for a movie..."
+      />
+      <button onClick={() => searchMovies(query)}>Search</button>
 
-      {movieId === undefined && (
-        <>
-          <div className='search-container'>
-            Search Movie:{' '}
-            <input
-              type='text'
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            <button type='button' onClick={handleSearch}>
-              Search
-            </button>
-            <div className='searched-movie'>
-              {searchedMovieList.map((movie) => (
-                <p onClick={() => handleSelectMovie(movie)}>
-                  {movie.original_title}
-                </p>
-              ))}
-            </div>
+      <div>
+        {searchedMovieList.map((movie) => (
+          <div key={movie.id} onClick={() => handleMovieClick(movie.id)}>
+            <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+            <p>{movie.title}</p>
           </div>
-          <hr />
-        </>
-      )}
-
-      <div className='container'>
-        <form>
-          {selectedMovie ? (
-            <img
-              className='poster-image'
-              src={`https://image.tmdb.org/t/p/original/${selectedMovie.poster_path}`}
-            />
-          ) : (
-            ''
-          )}
-          <div className='field'>
-            Title:
-            <input
-              type='text'
-              value={selectedMovie ? selectedMovie.original_title : ''}
-            />
-          </div>
-          <div className='field'>
-            Overview:
-            <textarea
-              rows={10}
-              value={selectedMovie ? selectedMovie.overview : ''}
-            />
-          </div>
-
-          <div className='field'>
-            Popularity:
-            <input
-              type='text'
-              value={selectedMovie ? selectedMovie.popularity : ''}
-            />
-          </div>
-
-          <div className='field'>
-            Release Date:
-            <input
-              type='text'
-              value={selectedMovie ? selectedMovie.release_date : ''}
-            />
-          </div>
-
-          <div className='field'>
-            Vote Average:
-            <input
-              type='text'
-              value={selectedMovie ? selectedMovie.vote_average : ''}
-            />
-          </div>
-
-          <button type='button' onClick={handleSave}>
-            Save
-          </button>
-        </form>
+        ))}
       </div>
-      {movieId !== undefined && selectedMovie && (
-        <div>
-          <hr />
-          <nav>
-            <ul className='tabs'>
-              <li
-                onClick={() => {
-                  navigate(`/main/movies/form/${movieId}/cast-and-crews`);
-                }}
-              >
-                Cast & Crews
-              </li>
-              <li
-                onClick={() => {
-                  navigate(`/main/movies/form/${movieId}/videos`);
-                }}
-              >
-                Videos
-              </li>
-              <li
-                onClick={() => {
-                  navigate(`/main/movies/form/${movieId}/photos`);
-                }}
-              >
-                Photos
-              </li>
-            </ul>
-          </nav>
 
-          <Outlet />
-        </div>
-      )}
-    </>
+      <Outlet /> {/* Used to render nested routes */}
+    </div>
   );
 };
 
