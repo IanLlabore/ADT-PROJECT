@@ -6,13 +6,13 @@ import './Form.css';
 const Form = () => {
   const [query, setQuery] = useState('');
   const [searchedMovieList, setSearchedMovieList] = useState([]);
-  const [movieDetails, setMovieDetails] = useState({
-    movie: undefined,
-    cast: [],
-    crew: [],
-    videos: [],
-    images: []
-  });
+  //const [movieDetails, setMovieDetails] = useState({
+   // movie: undefined,
+   // cast: [],
+    //crew: [],
+    //videos: [],
+    //images: []
+  //});
 
   const navigate = useNavigate();
   let { movieId } = useParams();
@@ -40,13 +40,13 @@ const Form = () => {
       const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
         params: { api_key: 'f10ad5116962b95dec6775837d225574' },
       });
-      setMovieDetails({
-        movie: response.data,
-        cast: response.data.cast || [],
-        crew: response.data.crew || [],
-        videos: response.data.videos || [],
-        images: response.data.images || [],
-      });
+      //setMovieDetails({
+       // movie: response.data,
+        //cast: response.data.cast || [],
+        //crew: response.data.crew || [],
+        //videos: response.data.videos || [],
+        //images: response.data.images || [],
+      //});
     } catch (error) {
       console.error('Error fetching movie details:', error);
     }

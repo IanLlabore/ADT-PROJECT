@@ -1,0 +1,18 @@
+.movie-images img {
+    width: 100%;
+    height: auto;
+    margin: 10px 0;
+  }
+  
+  .cast .actor {
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+  }
+  
+  .cast .actor img {
+    width: 100px;
+    height: 150px;
+    border-radius: 8px;
+  }
+  
