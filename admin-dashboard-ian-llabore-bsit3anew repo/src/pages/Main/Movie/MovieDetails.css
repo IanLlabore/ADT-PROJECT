@@ -1,18 +1,196 @@
-.movie-images img {
-    width: 100%;
-    height: auto;
-    margin: 10px 0;
-  }
-  
-  .cast .actor {
-    display: inline-block;
-    text-align: center;
-    margin: 10px;
-  }
-  
-  .cast .actor img {
-    width: 100px;
-    height: 150px;
-    border-radius: 8px;
-  }
-  
+/* General Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.movie-header {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.movie-header img {
+  border-radius: 8px;
+  width: 250px;
+  height: auto;
+}
+
+.movie-details {
+  flex: 1;
+}
+
+.movie-details h1 {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0;
+  color: #333;
+}
+
+.movie-details p {
+  color: #555;
+  line-height: 1.5;
+  margin-top: 15px;
+}
+
+.movie-stats {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+  color: #888;
+}
+
+.movie-stats span {
+  font-size: 16px;
+}
+
+/* Tab Styling */
+.tabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.tabs button {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tabs button:hover,
+.tabs button.active {
+  background-color: #ddd;
+  border-radius: 5px;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Cast & Crew Section */
+.cast-crew {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cast-crew .section-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.cast-crew .person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cast-crew .person img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.cast-crew .person p {
+  margin: 0;
+  font-size: 16px;
+  color: #444;
+}
+
+.cast-crew .view-all {
+  text-align: center;
+  color: #007BFF;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Carousel Styling */
+.carousel-container {
+  margin-bottom: 30px;
+}
+
+.slick-slide img {
+  border-radius: 8px;
+  width: 100%;
+  height: auto;
+}
+
+.slick-prev,
+.slick-next {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.slick-prev:before,
+.slick-next:before {
+  color: white;
+}
+
+/* Button for Viewing More */
+.view-all {
+  text-align: center;
+  cursor: pointer;
+  color: #007BFF;
+  margin-top: 20px;
+  font-size: 16px;
+  text-decoration: underline;
+}
+
+.view-all:hover {
+  color: #0056b3;
+}
+
+
+.carousel-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.carousel-buttons button {
+  background-color: #000;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.carousel-buttons button:hover {
+  background-color: #333;
+}
+
+.photos-tab img {
+  width: 100%;
+  height: auto;
+}

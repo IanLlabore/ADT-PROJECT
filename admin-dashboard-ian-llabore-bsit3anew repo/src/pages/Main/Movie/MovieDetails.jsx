@@ -2,118 +2,171 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Slider from 'react-slick';
-import './MovieDetails.css'; // Optional styling
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // For custom arrow buttons
+import './MovieDetails.css'; // Your custom styles
 
 // Slick Carousel CSS
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 
 const MovieDetails = () => {
-  const { movieId } = useParams();  // Extract movieId from URL
-  const [movieDetails, setMovieDetails] = useState({
-    movie: undefined,
-    cast: [],
-    crew: [],
-    videos: [],
-    images: []
-  });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { movieId } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [cast, setCast] = useState([]);
+  const [crew, setCrew] = useState([]);
+  const [stills, setStills] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [tab, setTab] = useState('cast'); // Default to the Cast & Crew tab
+  const [showAllCast, setShowAllCast] = useState(false);
+  const [showAllCrew, setShowAllCrew] = useState(false);
 
-  // Fetch movie details, cast, crew, and images on component mount or movieId change
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
-        setLoading(true);
-        
-        // Fetching the movie details
-        const movieResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
-          params: {
-            api_key: 'f10ad5116962b95dec6775837d225574', // Replace with your API key
-          },
-        });
-        
-        // Fetching the cast and crew details
-        const castResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits`, {
-          params: {
-            api_key: 'f10ad5116962b95dec6775837d225574', // Replace with your API key
-          },
-        });
+        const movieRes = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=f10ad5116962b95dec6775837d225574`);
+        setMovie(movieRes.data);
+      } catch (err) {
+        console.error("Error fetching movie details", err);
+      }
+    };
 
-        // Fetching movie still images
-        const imagesResponse = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/images`, {
-          params: {
-            api_key: 'f10ad5116962b95dec6775837d225574', // Replace with your API key
-          },
-        });
+    const fetchCastAndCrew = async () => {
+      try {
+        const castRes = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=f10ad5116962b95dec6775837d225574`);
+        setCast(castRes.data.cast);
+        setCrew(castRes.data.crew);
+      } catch (err) {
+        console.error("Error fetching cast and crew", err);
+      }
+    };
 
-        setMovieDetails({
-          movie: movieResponse.data,
-          cast: castResponse.data.cast,
-          crew: castResponse.data.crew,
-          images: imagesResponse.data.backdrops,
-        });
-        setLoading(false);
-      } catch (error) {
-        setError("Failed to fetch movie details.");
-        setLoading(false);
+    const fetchStills = async () => {
+      try {
+        const stillsRes = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/images?api_key=f10ad5116962b95dec6775837d225574`);
+        setStills(stillsRes.data.backdrops); // Use backdrops for stills
+      } catch (err) {
+        console.error("Error fetching movie stills", err);
+      }
+    };
+
+    const fetchVideos = async () => {
+      try {
+        const videosRes = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=f10ad5116962b95dec6775837d225574`);
+        setVideos(videosRes.data.results); // Videos such as trailers
+      } catch (err) {
+        console.error("Error fetching movie videos", err);
       }
     };
 
     fetchMovieDetails();
+    fetchCastAndCrew();
+    fetchStills();
+    fetchVideos();
   }, [movieId]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  // Show "View All" functionality for Cast & Crew
+  const handleShowAllCast = () => setShowAllCast(!showAllCast);
+  const handleShowAllCrew = () => setShowAllCrew(!showAllCrew);
+
+  // Settings for Slick Carousel
+  const carouselSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <FaArrowRight className="slick-arrow slick-next" />,
+    prevArrow: <FaArrowLeft className="slick-arrow slick-prev" />,
+  };
 
   return (
-    <div className="movie-details">
-      {/* Movie Info */}
-      <h1>{movieDetails.movie?.title}</h1>
-      <p>{movieDetails.movie?.overview}</p>
-      <img 
-        src={`https://image.tmdb.org/t/p/w500${movieDetails.movie?.poster_path}`} 
-        alt={movieDetails.movie?.title}
-      />
-
-      {/* Carousel for Movie Stills */}
-      <h2>Movie Stills</h2>
-      <Slider dots={true} infinite={true} speed={500} slidesToShow={1} slidesToScroll={1}>
-        {movieDetails.images.map((image) => (
-          <div key={image.file_path}>
-            <img 
-              src={`https://image.tmdb.org/t/p/w500${image.file_path}`} 
-              alt="Movie Still"
-              style={{ width: '100%', height: 'auto' }}
-            />
+    <div>
+      {movie && (
+        <div className="movie-details">
+          <div className="movie-poster">
+            <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
           </div>
-        ))}
-      </Slider>
+          <h1>{movie.title}</h1>
+          <p>{movie.overview}</p>
+          <p>Release Date: {movie.release_date}</p>
+          <p>Rating: {movie.vote_average}</p>
+          <p>Popularity: {movie.popularity}</p>
+        </div>
+      )}
 
-      {/* Cast Section */}
-      <h2>Cast</h2>
-      <div className="cast">
-        {movieDetails.cast.map((actor) => (
-          <div key={actor.id}>
-            <img 
-              src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`} 
-              alt={actor.name} 
-              style={{ width: '150px', height: 'auto', borderRadius: '50%' }}
-            />
-            <p>{actor.name}</p>
-          </div>
-        ))}
+      <div className="tabs">
+        <button onClick={() => setTab('cast')}>Cast & Crew</button>
+        <button onClick={() => setTab('photos')}>Photos</button>
+        <button onClick={() => setTab('videos')}>Videos</button>
       </div>
 
-      {/* Crew Section */}
-      <h2>Crew</h2>
-      <div className="crew">
-        {movieDetails.crew.map((crewMember) => (
-          <div key={crewMember.id}>
-            <p>{crewMember.name} - {crewMember.job}</p>
+      {tab === 'cast' && (
+        <div className="cast-crew">
+          <h2>Cast</h2>
+          <div className="cast-list">
+            {cast.slice(0, showAllCast ? cast.length : 10).map(actor => (
+              <div key={actor.id}>
+                <img src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`} alt={actor.name} />
+                <p>{actor.name}</p>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          {cast.length > 10 && (
+            <button onClick={handleShowAllCast}>{showAllCast ? 'Show Less' : 'View All'}</button>
+          )}
+
+          <h2>Crew</h2>
+          <div className="crew-list">
+            {crew.slice(0, showAllCrew ? crew.length : 10).map(member => (
+              <div key={member.id}>
+                <p>{member.name} ({member.job})</p>
+              </div>
+            ))}
+          </div>
+          {crew.length > 10 && (
+            <button onClick={handleShowAllCrew}>{showAllCrew ? 'Show Less' : 'View All'}</button>
+          )}
+        </div>
+      )}
+
+      {tab === 'photos' && (
+        <div className="photos">
+          <h2>Movie Stills</h2>
+          <Slider {...carouselSettings}>
+            {stills.map(still => (
+              <div key={still.file_path}>
+                <img
+                  src={`https://image.tmdb.org/t/p/w500${still.file_path}`}
+                  alt="Movie Still"
+                  className="movie-still"
+                />
+              </div>
+            ))}
+          </Slider>
+        </div>
+      )}
+
+      {tab === 'videos' && (
+        <div className="videos">
+          <h2>Videos</h2>
+          {videos.length > 0 ? (
+            <div>
+              <h3>Trailer</h3>
+              <iframe
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${videos[0].key}`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title="Movie Trailer"
+              ></iframe>
+            </div>
+          ) : (
+            <p>No trailer available</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
