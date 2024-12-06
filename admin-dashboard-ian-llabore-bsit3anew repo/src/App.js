@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
 import Login from './pages/Public/Login/Login';
+import Register from './pages/Public/Register/Register';
 import Dashboard from './pages/Main/Dashboard/Dashboard';
 import Main from './pages/Main/Main';
 import Movie from './pages/Main/Movie/Movie';
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Login />,
+  },
+  {
+    path: '/register',
+    element: <Register />,
   },
   {
     path: '/main',
@@ -55,7 +60,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-// Provide the router to your app
+
 function App() {
   return <RouterProvider router={router} />;
 }

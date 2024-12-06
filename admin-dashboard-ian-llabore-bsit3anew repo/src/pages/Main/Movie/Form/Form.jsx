@@ -6,23 +6,16 @@ import './Form.css';
 const Form = () => {
   const [query, setQuery] = useState('');
   const [searchedMovieList, setSearchedMovieList] = useState([]);
-  //const [movieDetails, setMovieDetails] = useState({
-   // movie: undefined,
-   // cast: [],
-    //crew: [],
-    //videos: [],
-    //images: []
-  //});
-
   const navigate = useNavigate();
   let { movieId } = useParams();
 
   // Function to search for movies
   const searchMovies = async (query) => {
+    if (!query) return;
     try {
       const response = await axios.get('https://api.themoviedb.org/3/search/movie', {
         params: {
-          api_key: 'f10ad5116962b95dec6775837d225574', // Replace with your API key
+          api_key: 'f10ad5116962b95dec6775837d225574',
           query: query,
         },
       });
@@ -40,13 +33,6 @@ const Form = () => {
       const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
         params: { api_key: 'f10ad5116962b95dec6775837d225574' },
       });
-      //setMovieDetails({
-       // movie: response.data,
-        //cast: response.data.cast || [],
-        //crew: response.data.crew || [],
-        //videos: response.data.videos || [],
-        //images: response.data.images || [],
-      //});
     } catch (error) {
       console.error('Error fetching movie details:', error);
     }
@@ -65,20 +51,33 @@ const Form = () => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search for a movie..."
-      />
-      <button onClick={() => searchMovies(query)}>Search</button>
+    <div className="form-container">
+      <div className="search-bar">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search for a movie..."
+          className="search-input"
+        />
+        <button onClick={() => searchMovies(query)} className="search-button">
+          Search
+        </button>
+      </div>
 
-      <div>
+      <div className="movie-list">
         {searchedMovieList.map((movie) => (
-          <div key={movie.id} onClick={() => handleMovieClick(movie.id)}>
-            <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
-            <p>{movie.title}</p>
+          <div
+            key={movie.id}
+            className="movie-card"
+            onClick={() => handleMovieClick(movie.id)}
+          >
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              alt={movie.title}
+              className="movie-poster"
+            />
+            <p className="movie-title">{movie.title}</p>
           </div>
         ))}
       </div>
