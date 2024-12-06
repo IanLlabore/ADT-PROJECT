@@ -1,40 +1,108 @@
 .Main {
   display: flex;
   overflow: hidden;
-  max-height: 100vh;
+  height: 100vh;
 }
+
 .Main .container {
   display: flex;
-  width: 100vw;
+  width: 100%;
 }
+
 .Main .container .outlet {
-  flex-grow: 3;
+  flex-grow: 1;
   padding: 1rem;
   overflow-y: auto;
 }
+
 .Main .container .navigation {
-  background-color: aliceblue;
-  padding-top: 40px;
+  background-color: black; /* Dark background for contrast */
+  padding-top: 20px;
   height: 100vh;
+  width: 240px;
+  box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 10px 10px 0; /* Rounded right corners */
+  position: sticky;
+  top: 0;
 }
+
 .Main .container .navigation ul {
   list-style: none;
-  overflow: hidden;
   padding: 0;
   margin: 0;
 }
 
 .Main .container .navigation ul li {
-  padding: 10px 80px 10px 20px;
+  padding: 12px 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
-.Main .container .navigation ul li.active,
-.Main .container .navigation ul li:hover {
-  background: #ccc;
+
+.Main .container .navigation ul li:hover,
+.Main .container .navigation ul li.active {
+  background-color: red;
+  transform: scale(1); /* Slight scaling effect on hover */
+  color: white;
+  border-radius: 5px;
 }
-.Main .container .navigation ul li a {
+
+.Main .container .navigation ul li a,
+.Main .container .navigation ul li .nav-link {
   text-decoration: none;
+  color: inherit;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .Main .container .navigation ul li.logout {
+  margin-top: auto;
+  text-align: center;
+}
+
+.Main .container .navigation ul li.logout .logout-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  width: 100%;
+  font-weight: bold;
   cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.Main .container .navigation ul li.logout .logout-btn:hover {
+  background-color: #c82333;
+}
+
+.movies-btn {
+  background-color: white;
+  color: red;
+  border: 2px solid red;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 200px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.movies-btn .nav-link {
+  text-decoration: none;
+  color: red;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .Main .container .navigation {
+    width: 200px; /* Reduce width for smaller screens */
+  }
+
+  .Main .container .navigation ul li {
+    padding: 10px 15px;
+  }
+
+  .Main .container .navigation ul li a {
+    font-size: 0.9rem; /* Slightly smaller font size */
+  }
 }

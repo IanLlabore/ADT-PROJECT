@@ -119,7 +119,7 @@ const MovieDetails = () => {
 
 
   const handleBackButtonClick = () => {
-    navigate('/movies');  // Navigate back to the List page
+    navigate('/main/movies');  // Navigate back to the List page
   };
 
   return (

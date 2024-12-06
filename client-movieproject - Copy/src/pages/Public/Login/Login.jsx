@@ -43,28 +43,48 @@ function Login() {
   const handleLogin = async () => {
     const data = { email, password };
     setStatus('loading');
-
-    await axios({
-      method: 'post',
-      url: '/admin/login',
-      data,
-      headers: { 'Access-Control-Allow-Origin': '*' },
-    })
-      .then((res) => {
-        console.log(res);
-        //store response access token to localstorage
-        localStorage.setItem('accessToken', res.data.access_token);
-        navigate('/main/movies');
-        setStatus('idle');
-      })
-      .catch((e) => {
-        setError(e.response.data.message);
-        console.log(e);
-        setStatus('idle');
-        // alert(e.response.data.message);
+  
+    try {
+      const response = await axios.post('http://localhost/movieproject-api/user/login', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+  
+      // Log the raw response data to see the full string
+      console.log('Full Response:', response.data);
+  
+      // Extract the JSON part from the response string
+      const jsonString = response.data.match(/{.*}/s); // Matches everything inside the first curly braces
+      if (jsonString) {
+        const parsedResponse = JSON.parse(jsonString[0]); // Safely parse the matched JSON string
+  
+        console.log('Parsed Response:', parsedResponse);
+  
+        if (parsedResponse && parsedResponse.access_token) {
+          console.log('Saving token:', parsedResponse.access_token);
+          localStorage.setItem('accessToken', parsedResponse.access_token);
+          console.log('Stored token in localStorage:', localStorage.getItem('accessToken'));
+          navigate('/main/movies');
+        } else {
+          setError('Token not found');
+          alert('Login failed, token not found.');
+        }
+      } else {
+        console.log('Invalid response format:', response.data);
+        setError('Invalid response format');
+        alert('Login failed, invalid response format.');
+      }
+  
+      setStatus('idle');
+    } catch (error) {
+      console.error('Error:', error);
+      setError(error.response?.data?.message || 'An error occurred');
+      setStatus('idle');
+    }
   };
-
+  
+  
   useEffect(() => {
     setDebounceState(true);
   }, [userInputDebounce]);
@@ -73,8 +93,8 @@ function Login() {
     <div className='Login'>
       <div className='main-container'>
         <form>
-          <div className='form-container'>
-            <h3>Login</h3>
+        <div className="form-container" style={{ backgroundColor: 'rgba(213, 17, 17, 0.3)' }}>
+            <h3>LOGIN</h3>
 
             {error && <span className='login errors'>{error}</span>}
             <div>
@@ -125,7 +145,7 @@ function Login() {
                       emailRef.current.focus();
                     }
 
-                    if (password == '') {
+                    if (password =='') {
                       passwordRef.current.focus();
                     }
                   }
@@ -135,7 +155,7 @@ function Login() {
               </button>
             </div>
             <div className='register-container'>
-              <a href='/register'>
+              <a href='/Register'>
                 <small>Register</small>
               </a>
             </div>

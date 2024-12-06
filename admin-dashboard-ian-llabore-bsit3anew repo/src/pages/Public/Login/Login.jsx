@@ -93,8 +93,8 @@ function Login() {
     <div className='Login'>
       <div className='main-container'>
         <form>
-          <div className='form-container'>
-            <h3>Login</h3>
+        <div className="form-container" style={{ backgroundColor: 'rgba(213, 17, 17, 0.3)' }}>
+            <h3>LOGIN</h3>
 
             {error && <span className='login errors'>{error}</span>}
             <div>

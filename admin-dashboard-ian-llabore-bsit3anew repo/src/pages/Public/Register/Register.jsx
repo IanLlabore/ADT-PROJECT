@@ -8,7 +8,7 @@ function Register() {
   const navigate = useNavigate();
 
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({  
     email: '',
     password: '',
     firstName: '',
@@ -72,56 +72,57 @@ function Register() {
 
   return (
     <div className='Register'>
-      <div className='main-container'>
-        <h3>Register</h3>
-        <form>
-          <div className='form-container'>
-            {['firstName', 'middleName', 'lastName', 'contactNo', 'role', 'email', 'password'].map((field) => (
-              <div key={field}>
-                <div className='form-group'>
-                  <label>{`${field.charAt(0).toUpperCase() + field.slice(1)}:`}</label>
-                  <input
-                    type={field === 'password' && !isShowPassword ? 'password' : 'text'}
-                    name={field}
-                    ref={refs[field]}
-                    onChange={(e) => handleChange(e, field)}
-                  />
-                </div>
-                {debounceState && isFieldsDirty && !formData[field] && (
-                  <span className='errors'>This field is required</span>
-                )}
-              </div>
-            ))}
-
-            <div className='show-password' onClick={handleShowPassword}>
-              {isShowPassword ? 'Hide' : 'Show'} Password
+  <div className='main-container'>
+    <form>
+      <div className="form-container" style={{ backgroundColor: 'rgba(213, 17, 17, 0.3)' }}>
+      <h2>Register</h2> 
+        {['firstName', 'middleName', 'lastName', 'contactNo', 'role', 'email', 'password'].map((field) => (
+          <div key={field}>
+            <div className='form-group'>
+              <label>{`${field.charAt(0).toUpperCase() + field.slice(1)}:`}</label>
+              <input
+                type={field === 'password' && !isShowPassword ? 'password' : 'text'}
+                name={field}
+                ref={refs[field]}
+                onChange={(e) => handleChange(e, field)}
+              />
             </div>
-
-            <div className='submit-container'>
-              <button
-                type='button'
-                disabled={status === 'loading'}
-                onClick={() => {
-                  if (!formData.email || !formData.password) {
-                    setIsFieldsDirty(true);
-                    !formData.email && refs.email.current.focus();
-                    !formData.password && refs.password.current.focus();
-                    return;
-                  }
-                  handleRegister();
-                }}
-              >
-                {status === 'idle' ? 'Register' : 'Loading'}
-              </button>
-            </div>
-
-            <div className='register-container'>
-              <small>Already have an account? <a href='/'>Login</a></small>
-            </div>
+            {debounceState && isFieldsDirty && !formData[field] && (
+              <span className='errors'>This field is required</span>
+            )}
           </div>
-        </form>
+        ))}
+
+        <div className='show-password' onClick={handleShowPassword}>
+          {isShowPassword ? 'Hide' : 'Show'} Password
+        </div>
+
+        <div className='submit-container'>
+          <button
+            type='button'
+            disabled={status === 'loading'}
+            onClick={() => {
+              if (!formData.email || !formData.password) {
+                setIsFieldsDirty(true);
+                !formData.email && refs.email.current.focus();
+                !formData.password && refs.password.current.focus();
+                return;
+              }
+              handleRegister();
+            }}
+          >
+            {status === 'idle' ? 'Register' : 'Loading'}
+          </button>
+        </div>
+
+        <div className='register-container'>
+          <small>Already have an account? <a href='/'>Login</a></small>
+        </div>
       </div>
-    </div>
+    </form>
+  </div>
+</div>
+
   );
 }
 

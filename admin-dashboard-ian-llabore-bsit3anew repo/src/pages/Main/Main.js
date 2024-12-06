@@ -1,41 +1,38 @@
 import { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, Link } from 'react-router-dom';
 import './Main.css';
 
 function Main() {
   const accessToken = localStorage.getItem('accessToken');
   const navigate = useNavigate();
+
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     navigate('/');
   };
 
   useEffect(() => {
-    if (
-      accessToken === undefined ||
-      accessToken === '' ||
-      accessToken === null
-    ) {
+    if (!accessToken) {
       handleLogout();
     }
-  }, []);
+  }, [accessToken]);
+
   return (
-    <div className='Main'>
-      <div className='container'>
-        <div className='navigation'>
+    <div className="Main">
+      <div className="container">
+        <nav className="navigation">
           <ul>
-            {/* <li>
-              <a href='/main/dashboard'>Dashboard</a>
-            </li> */}
             <li>
-              <a href='/main/movies'>Movies</a>
+              <button className="movies-btn">
+                <Link to="/main/movies" className="nav-link">Movies</Link>
+              </button>
             </li>
-            <li className='logout'>
-              <a onClick={handleLogout}>Logout</a>
+            <li className="logout">
+              <button onClick={handleLogout} className="logout-btn">Logout</button>
             </li>
           </ul>
-        </div>
-        <div className='outlet'>
+        </nav>
+        <div className="outlet">
           <Outlet />
         </div>
       </div>

@@ -1,48 +1,130 @@
+/* Main Container */
 .main-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-color: #f4f7fa; /* Light background for contrast */
+  background-image: url("C:\Users\Ian Llabore\Downloads\Black and Red Modern Guess The Movie Animated Game Presentation (1).jpg"); /* Add your background image URL here */
+  background-size: cover; /* Ensure the background image covers the entire container */
+  background-position: center; /* Position the background image in the center */
+  background-repeat: no-repeat;
+  overflow: hidden; /* Prevent page from moving when right-clicking and dragging */
+  user-select: none; /* Prevent text selection */
+  -webkit-user-drag: none; /* Prevent image dragging */
 }
 
+/* Form Container */
 .form-container {
-  padding: 4rem 2rem;
-  border: 1px solid #ccc;
-  border-radius: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.form-container > div {
-  margin-bottom: 12px;
+  color: white;
+  background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
 }
 
+/* Form Group */
 .form-group {
   display: flex;
+  flex-direction: row; /* Keep horizontal alignment */
+  align-items: center;
+  width: 100%;
 }
 
+/* Label */
 .form-group label {
-  width: 70px;
-  margin-right: 8px;
+  width: 20%; /* Reduce label width */
+  margin-right: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
   text-align: left;
 }
-.login.errors {
-  margin-bottom: 1rem;
+
+/* Input Fields */
+input[type="text"],
+input[type="password"] {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  font-size: 16px;
+  width: 80%; /* Increase input width to balance with label */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
 }
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Error Styling */
 .errors {
-  color: red;
+  color: #e74c3c;
   font-size: 12px;
+  font-style: italic;
 }
-.submit-container {
-  margin-top: 12px;
-  text-align: center;
-}
-.register-container {
-  text-align: center;
-}
-.show-password {
-  margin-bottom: 1rem;
+
+/* Submit Button */
+.submit-container button {
+  padding: 12px 25px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 0.5rem;
   cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.submit-container button:hover {
+  background-color: #0056b3;
+}
+
+/* Register Text Inside Form */
+.register-container {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  width: 100%; /* Make it align with the form */
+}
+
+.register-container a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.register-container a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+/* Show Password */
+.show-password {
+  margin-top: 10px;
+  text-align: left;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 2rem;
+    width: 90%;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .submit-container button {
+    font-size: 14px;
+  }
 }

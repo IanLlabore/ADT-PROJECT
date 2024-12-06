@@ -1,0 +1,158 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212;
+    color: #ffffff;
+  }
+  
+  /* Movie banner with background image */
+  .movie-banner {
+    position: relative;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    color: white;
+  }
+  
+  .movie-banner h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .return-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #f57c00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .return-button:hover {
+    background-color: #ff9800;
+  }
+  
+  /* Movie information section */
+  .movie-info {
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin: -50px 20px 20px;
+    border-radius: 10px;
+    color: white;
+  }
+  
+  .movie-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .movie-info p {
+    margin: 5px 0;
+  }
+  
+  /* Tabs navigation */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .tab-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    background-color: #333333;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .tab-button.active {
+    background-color: #f57c00;
+  }
+  
+  .tab-button:hover {
+    background-color: #ff9800;
+  }
+  
+  /* Section styles */
+  .section {
+    padding: 20px;
+  }
+  
+  .cast-list,
+  .photo-carousel,
+  .video-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  /* Cast styles */
+  .cast-member {
+    text-align: center;
+    max-width: 150px;
+  }
+  
+  .actor-photo {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  /* Photos */
+  .movie-photo {
+    width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  /* Videos */
+  .video-item {
+    text-align: center;
+    max-width: 400px;
+  }
+  
+  .video-frame {
+    width: 100%;
+    height: 220px;
+    border-radius: 10px;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .movie-banner h1 {
+      font-size: 2rem;
+    }
+  
+    .movie-info {
+      margin: 0 10px 20px;
+      padding: 10px;
+    }
+  
+    .tab-button {
+      padding: 5px 10px;
+    }
+  
+    .movie-photo {
+      width: 100%;
+      height: auto;
+    }
+  
+    .video-frame {
+      height: 180px;
+    }
+  }
+  

@@ -1,17 +1,107 @@
+/* General Styling */
 .lists-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  padding: 20px;
+  background-color: #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+.lists-container h2 {
+  color : red;
+  text-align: center;   /* Horizontally center the text */
+  margin: 0 auto;       /* Optional: Ensure any default margins are reset */
+  font-size: 35px;      /* Optional: Adjust the font size if needed */
+}
+
 .create-container {
-  align-self: flex-end;
-  margin: 1rem 0;
+  margin-bottom: 20px;
+  text-align: right;
 }
-.table-container,
-.movie-lists {
-  width: 100%;
+
+.create-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-button:hover {
+  background-color: #45a049;
 }
 
 .table-container {
+  margin-top: 20px;
+}
+
+.movie-lists {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.movie-lists th, .movie-lists td {
+  padding: 12px;
   text-align: center;
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.movie-lists th {
+  background-color: #007bff;
+  color: white;
+}
+
+.movie-lists tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.movie-lists tr:hover {
+  background-color: #f1f1f1;
+}
+
+.edit-button, .delete-button {
+  padding: 8px 16px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-button {
+  background-color: #ffc107;
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #e0a800;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .movie-lists th, .movie-lists td {
+    padding: 8px;
+  }
+
+  .create-button {
+    font-size: 14px;
+  }
+
+  .edit-button, .delete-button {
+    font-size: 14px;
+  }
 }
